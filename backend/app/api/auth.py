@@ -27,8 +27,17 @@ class TokenResponse(BaseModel):
 def login(body: LoginRequest, db: Session | None = Depends(get_db)):
     user = authenticate_user(db, body.username, body.password)
     if not user:
+        if settings.demo_mode:
+            from ..ict_security_demo import log_privileged_access
+
+            log_privileged_access(body.username, "UNKNOWN", "LOGIN_FAILED", "Invalid credentials")
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token(user["username"], user["role_code"], user["full_name"])
+    if settings.demo_mode:
+        from ..ict_security_demo import log_privileged_access
+
+        action = "PRIV_LOGIN" if user["role_code"] == "ADMIN" else "LOGIN"
+        log_privileged_access(user["username"], user["role_code"], action, "Successful authentication")
     return TokenResponse(
         access_token=token,
         role=user["role_code"],

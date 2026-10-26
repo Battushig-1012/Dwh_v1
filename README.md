@@ -19,7 +19,15 @@ Data Sources → Python ETL (Airflow DAG) → PostgreSQL DWH
 | API | FastAPI + JWT RBAC | Marts, lineage, dictionary, Excel/PDF |
 | UI | Next.js + Recharts + React Flow | Дашборд, lineage, тайлангийн төв |
 
-Дэлгэрэнгүй засаглал: [docs/DAMA_DMBOK_GOVERNANCE.md](docs/DAMA_DMBOK_GOVERNANCE.md)
+Дэлгэрэнгүй засаглал:
+
+- [docs/DAMA_DMBOK_GOVERNANCE.md](docs/DAMA_DMBOK_GOVERNANCE.md)
+- [docs/SSM_RDARR_MAPPING.md](docs/SSM_RDARR_MAPPING.md)
+- [docs/BCBS239_MAPPING.md](docs/BCBS239_MAPPING.md)
+- [docs/EBA_ICT_SECURITY_MAPPING.md](docs/EBA_ICT_SECURITY_MAPPING.md) — EBA/GL/2019/04 ICT & security
+- [docs/DPM_DATABASE_MAPPING.md](docs/DPM_DATABASE_MAPPING.md) — EBA DPM database (Aug 2013)
+- [docs/EBA_INTERNAL_GOVERNANCE_MAPPING.md](docs/EBA_INTERNAL_GOVERNANCE_MAPPING.md) — EBA/GL/2021/05 Internal governance (CRD)
+- [docs/OPS_REPORTS_REGISTRY.md](docs/OPS_REPORTS_REGISTRY.md) — Ops Reports каталог (жижиг/завсрын тайлан)
 
 ## Шуурхай эхлүүлэх (Docker)
 

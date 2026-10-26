@@ -13,7 +13,7 @@ const body = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "ББСБ · Enterprise Data & Regulatory Platform",
+  title: "DWH_v1 · Enterprise Data & Regulatory Platform",
   description: "SREP / BCBS 239 / DAMA-DMBOK aligned DWH reporting platform",
 };
 

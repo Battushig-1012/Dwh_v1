@@ -13,6 +13,8 @@ type M1Row = {
   amount_mnt: number;
   formula_ref?: string;
   source_mart?: string;
+  data_point_id?: number | null;
+  categorisation_key?: string | null;
 };
 
 export default function ReportsPage() {
@@ -25,7 +27,9 @@ export default function ReportsPage() {
       router.replace("/login");
       return;
     }
-    api<M1Row[]>("/api/srep/m1").then(setRows);
+    api<M1Row[]>("/api/dpm/facts/m1")
+      .then(setRows)
+      .catch(() => api<M1Row[]>("/api/srep/m1").then(setRows));
   }, [router]);
 
   async function onExport(kind: "xlsx" | "pdf") {
@@ -74,16 +78,19 @@ export default function ReportsPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-[var(--ink)] text-white">
               <tr>
-                <th className="text-left px-3 py-2">DPM</th>
+                <th className="text-left px-3 py-2">DPM / DataPoint</th>
                 <th className="text-left px-3 py-2">Үзүүлэлт</th>
                 <th className="text-right px-3 py-2">Дүн</th>
-                <th className="text-left px-3 py-2">Formula / Source</th>
+                <th className="text-left px-3 py-2">Formula / Categorisation</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
                 <tr key={r.dpm_code} className="border-t border-[var(--line)]">
-                  <td className="px-3 py-2 font-mono text-xs">{r.dpm_code}</td>
+                  <td className="px-3 py-2 font-mono text-xs">
+                    <div>{r.dpm_code}</div>
+                    {r.data_point_id != null ? <div className="text-[var(--accent)]">DP-{r.data_point_id}</div> : null}
+                  </td>
                   <td className="px-3 py-2">
                     <div>{r.dpm_label_mn}</div>
                     <div className="text-xs text-[var(--muted)]">{r.dpm_label_en}</div>
@@ -94,6 +101,9 @@ export default function ReportsPage() {
                   <td className="px-3 py-2 text-[var(--muted)] text-xs">
                     {r.formula_ref}
                     <div>{r.source_mart}</div>
+                    {r.categorisation_key ? (
+                      <div className="mt-1 font-mono break-all text-[10px]">{r.categorisation_key}</div>
+                    ) : null}
                   </td>
                 </tr>
               ))}

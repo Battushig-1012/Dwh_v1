@@ -46,7 +46,9 @@ export default function LoginPage() {
           }}
         />
         <div className="relative z-10 text-white max-w-lg">
-          <p className="font-display text-5xl leading-tight tracking-tight">ББСБ</p>
+          <p className="font-display text-5xl leading-tight tracking-tight">
+            DWH<span className="text-emerald-300/90">_v1</span>
+          </p>
           <h1 className="mt-4 font-display text-2xl leading-snug text-white/95">
             Нэгдсэн Дата Засаглал & Тайлагналын Платформ
           </h1>
