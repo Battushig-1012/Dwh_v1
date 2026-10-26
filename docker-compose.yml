@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bbsb_dwh_pg
+    environment:
+      POSTGRES_USER: dwh_admin
+      POSTGRES_PASSWORD: dwh_secret_change_me
+      POSTGRES_DB: bbsb_dwh
+    ports:
+      - "5432:5432"
+    volumes:
+      - dwh_pg_data:/var/lib/postgresql/data
+      - ./dwh/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dwh_admin -d bbsb_dwh"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: bbsb_dwh_api
+    environment:
+      DATABASE_URL: postgresql+psycopg2://dwh_admin:dwh_secret_change_me@postgres:5432/bbsb_dwh
+      JWT_SECRET: change-me-in-production-use-long-random
+      CORS_ORIGINS: http://localhost:3000
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: bbsb_dwh_web
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # Optional: Airflow-like local ETL runner (CLI). Full Airflow can replace this.
+  etl:
+    build:
+      context: ./etl
+    container_name: bbsb_dwh_etl
+    environment:
+      DATABASE_URL: postgresql+psycopg2://dwh_admin:dwh_secret_change_me@postgres:5432/bbsb_dwh
+      # Source DB URLs (point to read-replicas in production)
+      CORE_DB_URL: ${CORE_DB_URL:-}
+      ERP_DB_URL: ${ERP_DB_URL:-}
+      LOAN_APP_API_URL: ${LOAN_APP_API_URL:-http://host.docker.internal:9000}
+      USE_DEMO_SOURCES: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - etl
+
+volumes:
+  dwh_pg_data:
